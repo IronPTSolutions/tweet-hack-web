@@ -8,6 +8,8 @@ class Register extends React.Component {
       username: '',
       email: '',
       password: '',
+      name: '',
+      avatar: null
     },
     error: false,
     loading: false,
@@ -15,12 +17,12 @@ class Register extends React.Component {
   }
 
   handleChange = (event) => {
-    const { name, value } = event.target
+    const { name, value, files } = event.target
 
     this.setState({
       data: {
         ...this.state.data,
-        [name]: value
+        [name]: files ? files[0] : value
       }
     })
   }
@@ -28,8 +30,17 @@ class Register extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault()
 
+    const { data } = this.state
+
+    const formData = new FormData()
+    formData.append('username', data.username)
+    formData.append('name', data.name)
+    formData.append('avatar', data.avatar)
+    formData.append('password', data.password)
+    formData.append('email', data.email)
+
     this.setState({ loading: true, error: false }, () => {
-      TweetHackService.register({ ...this.state.data })
+      TweetHackService.register(formData)
         .then(() => {
           this.setState({ success: true })
         })
@@ -49,6 +60,21 @@ class Register extends React.Component {
     return (
       <div className="Register">
         <form onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+
+            <input
+              value={this.state.data.name}
+              onChange={this.handleChange}
+              autoComplete="off"
+              name="name"
+              type="text"
+              className={`form-control ${errorClassName}`}
+              id="name"
+              placeholder="Enter name"
+            />
+          </div>
+
           <div className="form-group">
             <label htmlFor="username">Username</label>
 
@@ -90,6 +116,18 @@ class Register extends React.Component {
               className={`form-control ${errorClassName}`}
               id="password"
               placeholder="Password"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="avatar">Avatar</label>
+
+            <input
+              onChange={this.handleChange}
+              name="avatar"
+              type="file"
+              className={`form-control ${errorClassName}`}
+              id="avatar"
             />
           </div>
 

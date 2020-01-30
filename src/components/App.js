@@ -22,9 +22,9 @@ class App extends React.Component {
               <Login/>
             </Route>
 
-            <AuthenticatedRoute exact path="/signup">
+            <Route exact path="/signup">
               <Register/>
-            </AuthenticatedRoute>
+            </Route>
 
             <Redirect to="/tweets"/>
           </Switch>
